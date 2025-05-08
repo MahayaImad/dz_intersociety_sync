@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_dz_sync_wizard_form" model="ir.ui.view">
+        <field name="name">dz.sync.wizard.form</field>
+        <field name="model">dz.sync.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Synchronisation inter-sociétés">
+                <sheet>
+                    <group  invisible = "summary != False">
+                        <field name="mapping_id" options="{'no_create': True}"/>
+                    </group>
+                    <group invisible = "summary != False">
+                        <group string="Éléments à synchroniser">
+                            <field name="sync_partners"/>
+                            <field name="sync_products"/>
+                            <field name="sync_invoices"/>
+                            <field name="sync_sales"/>
+                            <field name="sync_purchases"/>
+                        </group>
+                        <group string="Période">
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                    </group>
+                    <group invisible = "summary == False">
+                        <field name="summary" nolabel="1"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_sync" string="Lancer la synchronisation"
+                            type="object" class="btn-primary"
+                            invisible = "summary != False"/>
+                    <button string="Fermer" class="btn-secondary" special="cancel"
+                            invisible = "summary == False"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"
+                            invisible = "summary != False"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_dz_sync_wizard" model="ir.actions.act_window">
+        <field name="name">Lancer une synchronisation</field>
+        <field name="res_model">dz.sync.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_dz_sync_wizard"
+              name="Lancer une synchronisation"
+              parent="menu_dz_intersociety_root"
+              action="action_dz_sync_wizard"
+              sequence="5"/>
+</odoo>

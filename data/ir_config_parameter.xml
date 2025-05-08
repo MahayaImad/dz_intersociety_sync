@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Paramètres de synchronisation -->
+        <record id="dz_intersociety_sync_auto_enabled" model="ir.config_parameter">
+            <field name="key">dz_intersociety_sync.auto_enabled</field>
+            <field name="value">True</field>
+        </record>
+
+        <!-- Intervalle de synchronisation automatique (en minutes) -->
+        <record id="dz_intersociety_sync_interval" model="ir.config_parameter">
+            <field name="key">dz_intersociety_sync.interval</field>
+            <field name="value">60</field>
+        </record>
+
+        <!-- Nombre maximum d'enregistrements à synchroniser par lot -->
+        <record id="dz_intersociety_sync_batch_size" model="ir.config_parameter">
+            <field name="key">dz_intersociety_sync.batch_size</field>
+            <field name="value">100</field>
+        </record>
+
+        <!-- Activer la journalisation détaillée -->
+        <record id="dz_intersociety_sync_debug_mode" model="ir.config_parameter">
+            <field name="key">dz_intersociety_sync.debug_mode</field>
+            <field name="value">False</field>
+        </record>
+
+        <!-- Format de référence pour les documents synchronisés -->
+        <record id="dz_intersociety_sync_ref_format" model="ir.config_parameter">
+            <field name="key">dz_intersociety_sync.ref_format</field>
+            <field name="value">[SYNC] {original_ref}</field>
+        </record>
+    </data>
+</odoo>

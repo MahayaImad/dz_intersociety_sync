@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_dz_company_mapping_form" model="ir.ui.view">
+        <field name="name">dz.company.mapping.form</field>
+        <field name="model">dz.company.mapping</field>
+        <field name="arch" type="xml">
+            <form string="Mappage entre sociétés">
+                <header>
+                    <button name="action_sync_now" string="Synchroniser maintenant"
+                            type="object" class="oe_highlight"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nom du mappage"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="source_company_id"/>
+                            <field name="target_company_id"/>
+                            <field name="auto_sync"/>
+                        </group>
+                        <group>
+                            <field name="sync_partners"/>
+                            <field name="sync_products"/>
+                            <field name="sync_invoices"/>
+                            <field name="sync_sales"/>
+                            <field name="sync_purchases"/>
+                            <field name="last_sync_date" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vue arbre -->
+    <record id="view_dz_company_mapping_tree" model="ir.ui.view">
+        <field name="name">dz.company.mapping.tree</field>
+        <field name="model">dz.company.mapping</field>
+        <field name="arch" type="xml">
+            <tree string="Mappages entre sociétés">
+                <field name="name"/>
+                <field name="source_company_id"/>
+                <field name="target_company_id"/>
+                <field name="auto_sync"/>
+                <field name="last_sync_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vue recherche -->
+    <record id="view_dz_company_mapping_search" model="ir.ui.view">
+        <field name="name">dz.company.mapping.search</field>
+        <field name="model">dz.company.mapping</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher mappages">
+                <field name="name"/>
+                <field name="source_company_id"/>
+                <field name="target_company_id"/>
+                <filter string="Synchronisation auto" name="auto_sync"
+                        domain="[('auto_sync', '=', True)]"/>
+                <group expand="0" string="Grouper par">
+                    <filter string="Société source" name="group_by_source"
+                            context="{'group_by': 'source_company_id'}"/>
+                    <filter string="Société cible" name="group_by_target"
+                            context="{'group_by': 'target_company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_dz_company_mapping" model="ir.actions.act_window">
+        <field name="name">Mappages entre sociétés</field>
+        <field name="res_model">dz.company.mapping</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créer un nouveau mappage entre sociétés
+            </p>
+            <p>
+                Définissez les correspondances entre votre société principale
+                (contenant toutes les opérations) et votre société officielle
+                (uniquement les opérations facturées).
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem id="menu_dz_intersociety_root"
+              name="Sync Inter-Sociétés"
+              web_icon="dz_intersociety_sync,static/description/icon.png"
+              sequence="90"/>
+
+    <menuitem id="menu_dz_company_mapping"
+              name="Configuration"
+              parent="menu_dz_intersociety_root"
+              sequence="10"/>
+
+    <menuitem id="menu_dz_company_mapping_action"
+              name="Mappages entre sociétés"
+              parent="menu_dz_company_mapping"
+              action="action_dz_company_mapping"
+              sequence="10"/>
+</odoo>

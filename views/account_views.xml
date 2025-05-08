@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Ajout du champ et du bouton sur la vue de facture -->
+    <record id="view_move_form_inherit_dz_intersociety" model="ir.ui.view">
+        <field name="name">account.move.form.inherit.dz.intersociety</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_sync_invoice" type="object"
+                        string="Synchroniser vers société cible"
+                        invisible = "state == 'posted' or is_synced == True"
+                        groups="account.group_account_invoice"/>
+            </xpath>
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="sync_move_id" readonly="1" invisible ="sync_move_id == False"/>
+                <field name="is_synced" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Ajout du champ dans la vue liste -->
+    <record id="view_move_tree_inherit_dz_intersociety" model="ir.ui.view">
+        <field name="name">account.move.tree.inherit.dz.intersociety</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_out_invoice_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="after">
+                <field name="is_synced" widget="boolean_toggle"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Ajout d'un filtre pour voir les factures synchronisées -->
+    <record id="view_account_invoice_filter_inherit_dz_intersociety" model="ir.ui.view">
+        <field name="name">account.move.select.inherit.dz.intersociety</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='status']" position="after">
+                <separator/>
+                <filter string="Synchronisées" name="synced" domain="[('is_synced', '=', True)]"/>
+                <filter string="Non synchronisées" name="not_synced" domain="[('is_synced', '=', False)]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

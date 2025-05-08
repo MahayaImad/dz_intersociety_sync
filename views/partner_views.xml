@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Ajout du champ et du bouton sur la vue partenaire -->
+    <record id="view_partner_form_inherit_dz_intersociety" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.dz.intersociety</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_sync_partner" type="object"
+                        string="Synchroniser"
+                        class="oe_stat_button" icon="fa-refresh"
+                        invisible = "is_synced == True"
+                        groups="base.group_partner_manager"/>
+            </xpath>
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="sync_partner_id" readonly="1" attrs="{'invisible': [('sync_partner_id', '=', False)]}"/>
+                <field name="is_synced" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Ajout du champ dans la vue liste -->
+    <record id="view_partner_tree_inherit_dz_intersociety" model="ir.ui.view">
+        <field name="name">res.partner.tree.inherit.dz.intersociety</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='email']" position="after">
+                <field name="is_synced" widget="boolean_toggle"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Ajout d'un filtre pour voir les partenaires synchronisés -->
+    <record id="view_res_partner_filter_inherit_dz_intersociety" model="ir.ui.view">
+        <field name="name">res.partner.select.inherit.dz.intersociety</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='type_company']" position="after">
+                <separator/>
+                <filter string="Synchronisés" name="synced" domain="[('is_synced', '=', True)]"/>
+                <filter string="Non synchronisés" name="not_synced" domain="[('is_synced', '=', False)]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

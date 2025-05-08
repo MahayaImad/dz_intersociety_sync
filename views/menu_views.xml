@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Menu pour accéder au dashboard -->
+    <menuitem id="menu_dz_dashboard"
+              name="Dashboard"
+              parent="menu_dz_intersociety_root"
+              action="dz_intersociety_sync.action_dz_dashboard"
+              sequence="1"/>
+</odoo>

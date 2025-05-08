@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_dz_company_mapping_user,dz.company.mapping.user,model_dz_company_mapping,account.group_account_user,1,0,0,0
+access_dz_company_mapping_manager,dz.company.mapping.manager,model_dz_company_mapping,account.group_account_manager,1,1,1,1

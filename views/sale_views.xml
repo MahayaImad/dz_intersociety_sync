@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Ajout du champ et du bouton sur la vue commande de vente -->
+    <record id="view_order_form_inherit_dz_intersociety" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.dz.intersociety</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_sync_sale_order" type="object"
+                        string="Synchroniser vers société cible"
+                        invisible="state not in ('sale', 'done') or is_synced == True"
+                        groups="sales_team.group_sale_salesman"/>
+            </xpath>
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="sync_order_id" readonly="1" invisible = "sync_order_id == False"/>
+                <field name="is_synced" invisible="1"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Synchronisation" invisible = "sync_order_id == False">
+                    <group>
+                        <field name="sync_order_id" readonly="1" string="Commande miroir"/>
+                        <field name="sync_order_id.state" readonly="1" string="État de la commande miroir"/>
+                        <field name="sync_order_id.amount_total" readonly="1" string="Montant total de la commande miroir"/>
+                    </group>
+                    <group string="Historique de synchronisation">
+                        <field name="sync_date" readonly="1"/>
+                        <field name="sync_user_id" readonly="1"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Ajout du champ dans la vue liste -->
+    <record id="view_order_tree_inherit_dz_intersociety" model="ir.ui.view">
+        <field name="name">sale.order.tree.inherit.dz.intersociety</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="after">
+                <field name="is_synced" widget="boolean_toggle"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Ajout d'un filtre pour voir les commandes synchronisées -->
+    <record id="view_sales_order_filter_inherit_dz_intersociety" model="ir.ui.view">
+        <field name="name">sale.order.list.select.inherit.dz.intersociety</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='sales']" position="after">
+                <separator/>
+                <filter string="Synchronisées" name="synced" domain="[('is_synced', '=', True)]"/>
+                <filter string="Non synchronisées" name="not_synced" domain="[('is_synced', '=', False)]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Menu d'action pour la synchronisation en masse des commandes -->
+    <record id="action_sync_sale_orders" model="ir.actions.server">
+        <field name="name">Synchroniser les commandes</field>
+        <field name="model_id" ref="sale.model_sale_order"/>
+        <field name="binding_model_id" ref="sale.model_sale_order"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="groups_id" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
+        <field name="code">
+            # Code pour lancer un wizard de synchronisation pour les commandes sélectionnées
+            mappings = env['dz.company.mapping'].search([
+                ('source_company_id', '=', env.company.id),
+                ('sync_sales', '=', True),
+            ], limit=1)
+
+            if not mappings:
+                raise Warning("Aucun mappage trouvé pour synchroniser les commandes.")
+
+            synced_count = 0
+            for order in records:
+                try:
+                    if order.state in ['sale', 'done'] and not order.is_synced:
+                        order._sync_to_target_company(mappings[0])
+                        synced_count += 1
+                except Exception as e:
+                    raise Warning("Erreur lors de la synchronisation de la commande %s: %s" % (order.name, str(e)))
+
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'Synchronisation terminée',
+                    'message': '%d commandes ont été synchronisées avec succès.' % synced_count,
+                    'type': 'success',
+                    'sticky': False,
+                }
+            }
+        </field>
+    </record>
+</odoo>

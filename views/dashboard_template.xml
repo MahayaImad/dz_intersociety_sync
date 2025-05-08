@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="dashboard_template" name="Dashboard de synchronisation inter-sociétés">
+        <t t-call="web.layout">
+            <t t-set="head">
+                <t t-call-assets="web.assets_common" t-js="false"/>
+                <t t-call-assets="web.assets_backend" t-js="false"/>
+                <t t-call-assets="web.assets_common" t-css="false"/>
+                <t t-call-assets="web.assets_backend" t-css="false"/>
+                <style>
+                    .dz-dashboard {
+                        padding: 20px;
+                        margin: 20px;
+                        background-color: #f9f9f9;
+                        border-radius: 5px;
+                    }
+                    .dz-dashboard-header {
+                        margin-bottom: 20px;
+                        padding-bottom: 10px;
+                        border-bottom: 1px solid #ddd;
+                    }
+                    .dz-dashboard-card {
+                        background-color: white;
+                        border-radius: 5px;
+                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                        padding: 15px;
+                        margin-bottom: 20px;
+                    }
+                    .dz-dashboard-title {
+                        font-size: 24px;
+                        font-weight: bold;
+                        margin-bottom: 5px;
+                    }
+                    .dz-dashboard-subtitle {
+                        font-size: 16px;
+                        color: #666;
+                        margin-bottom: 20px;
+                    }
+                    .dz-dashboard-stat {
+                        display: inline-block;
+                        width: 120px;
+                        text-align: center;
+                        padding: 10px;
+                        margin: 5px;
+                        background-color: #f5f5f5;
+                        border-radius: 3px;
+                    }
+                    .dz-dashboard-stat-value {
+                        font-size: 24px;
+                        font-weight: bold;
+                        color: #4c4c4c;
+                    }
+                    .dz-dashboard-stat-label {
+                        font-size: 12px;
+                        color: #777;
+                    }
+                    .dz-dashboard-action {
+                        margin-top: 10px;
+                    }
+                </style>
+            </t>
+            <div class="dz-dashboard">
+                <div class="dz-dashboard-header">
+                    <div class="dz-dashboard-title">Dashboard de synchronisation inter-sociétés</div>
+                    <div class="dz-dashboard-subtitle">Société actuelle: <span t-esc="company.name"/></div>
+                </div>
+
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <t t-if="mappings">
+                                <t t-foreach="mappings" t-as="mapping">
+                                    <div class="dz-dashboard-card">
+                                        <h3><t t-esc="mapping.name"/></h3>
+                                        <div>
+                                            <strong>Société source:</strong> <t t-esc="mapping.source_company_id.name"/> <br/>
+                                            <strong>Société cible:</strong> <t t-esc="mapping.target_company_id.name"/> <br/>
+                                            <strong>Dernière synchronisation:</strong>
+                                            <t t-if="mapping.last_sync_date">
+                                                <t t-esc="mapping.last_sync_date"/>
+                                            </t>
+                                            <t t-else="">
+                                                Jamais
+                                            </t>
+                                        </div>
+                                        <div class="dz-dashboard-action">
+                                            <a t-att-href="'/web#action=%s&amp;model=dz.sync.wizard&amp;view_type=form&amp;mapping_id=%s' % (169, mapping.id)"
+                                               class="btn btn-primary">
+                                                Lancer une synchronisation
+                                            </a>
+                                        </div>
+                                    </div>
+                                </t>
+                            </t>
+                            <t t-else="">
+                                <div class="dz-dashboard-card">
+                                    <div class="alert alert-warning">
+                                        Aucune configuration de synchronisation trouvée pour votre société.
+                                        Veuillez créer un mappage entre sociétés dans le menu Configuration.
+                                    </div>
+                                    <div class="dz-dashboard-action">
+                                        <a href="/web#action=dz_intersociety_sync.action_dz_company_mapping"
+                                           class="btn btn-primary">
+                                            Configurer un mappage
+                                        </a>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="action_dz_dashboard" model="ir.actions.act_url">
+            <field name="name">Dashboard</field>
+            <field name="url">/dz_intersociety_sync/dashboard</field>
+            <field name="target">self</field>
+        </record>
+    </data>
+</odoo>

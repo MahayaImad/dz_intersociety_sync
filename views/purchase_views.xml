@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Ajout du champ et du bouton sur la vue commande d'achat -->
+    <record id="purchase_order_form_inherit_dz_intersociety" model="ir.ui.view">
+        <field name="name">purchase.order.form.inherit.dz.intersociety</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_sync_purchase" type="object"
+                        string="Synchroniser vers société cible"
+                        invisible="state not in ('purchase', 'done') or is_synced == True"
+                        groups="purchase.group_purchase_user"/>
+            </xpath>
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="sync_purchase_id" readonly="1" invisible = "sync_purchase_id == False"/>
+                <field name="is_synced" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Ajout du champ dans la vue liste -->
+    <record id="purchase_order_tree_inherit_dz_intersociety" model="ir.ui.view">
+        <field name="name">purchase.order.tree.inherit.dz.intersociety</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='state']" position="after">
+                <field name="is_synced" widget="boolean_toggle"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Ajout d'un filtre pour voir les commandes synchronisées -->
+    <record id="view_purchase_order_filter_inherit_dz_intersociety" model="ir.ui.view">
+        <field name="name">purchase.order.select.inherit.dz.intersociety</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.view_purchase_order_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='activities_upcoming_all']" position="after">
+                <separator/>
+                <filter string="Synchronisées" name="synced" domain="[('is_synced', '=', True)]"/>
+                <filter string="Non synchronisées" name="not_synced" domain="[('is_synced', '=', False)]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
