@@ -10,13 +10,15 @@
                 <button name="action_sync_partner" type="object"
                         string="Synchroniser"
                         class="oe_stat_button" icon="fa-refresh"
-                        invisible="1" invisible_modifier="[('is_synced', '=', True)]"
+                        modifiers="{'invisible': [['is_synced', '=', true]]}"
                         groups="base.group_partner_manager"/>
+
             </xpath>
             <xpath expr="//field[@name='company_id']" position="after">
-                <field name="sync_partner_id" readonly="1" invisible="1"
-                       invisible_modifier="[('sync_partner_id', '=', False)]"/>
+                <field name="sync_partner_id" readonly="1"
+                       modifiers="{'invisible': [['sync_partner_id', '=', false]]}"/>
                 <field name="is_synced" invisible="1"/>
+                <field name="is_eligible_for_declaration" groups="dz_intersociety_sync.group_declaration_manager"/>
             </xpath>
         </field>
     </record>
@@ -29,11 +31,12 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='email']" position="after">
                 <field name="is_synced" widget="boolean_toggle"/>
+                <field name="is_eligible_for_declaration" widget="boolean_toggle" groups="dz_intersociety_sync.group_declaration_manager"/>
             </xpath>
         </field>
     </record>
 
-    <!-- Ajout d'un filtre pour voir les partenaires synchronisés -->
+    <!-- Ajout d'un filtre pour voir les partenaires synchronisés et éligibles -->
     <record id="view_res_partner_filter_inherit_dz_intersociety" model="ir.ui.view">
         <field name="name">res.partner.select.inherit.dz.intersociety</field>
         <field name="model">res.partner</field>
@@ -43,6 +46,7 @@
                 <separator/>
                 <filter string="Synchronisés" name="synced" domain="[('is_synced', '=', True)]"/>
                 <filter string="Non synchronisés" name="not_synced" domain="[('is_synced', '=', False)]"/>
+                <filter string="Éligibles pour déclaration" name="eligible" domain="[('is_eligible_for_declaration', '=', True)]" groups="dz_intersociety_sync.group_declaration_manager"/>
             </xpath>
         </field>
     </record>

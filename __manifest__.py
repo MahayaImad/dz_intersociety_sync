@@ -27,6 +27,8 @@
 
         'data/ir_config_parameter.xml',
         'data/action_data.xml',
+        'data/stock_data.xml',
+        'data/sequence_data.xml',
 
         'views/company_mapping_views.xml',
         'views/account_views.xml',
@@ -37,6 +39,7 @@
         'views/partner_views.xml',
 
         'wizards/sync_wizard.xml',
+        'wizards/export_wizard.xml',
     ],
     'images': ['static/description/icon.png'],
     'assets': {

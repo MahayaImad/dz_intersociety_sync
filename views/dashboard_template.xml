@@ -84,7 +84,7 @@
                                             </t>
                                         </div>
                                         <div class="dz-dashboard-action">
-                                            <a t-att-href="'/web#action=%s&amp;model=dz.sync.wizard&amp;view_type=form&amp;mapping_id=%s' % (169, mapping.id)"
+                                            <a t-att-href="'/web#action=%s&amp;model=dz.sync.wizard&amp;view_type=form&amp;mapping_id=%s' % (action_id, mapping.id)"
                                                class="btn btn-primary">
                                                 Lancer une synchronisation
                                             </a>
@@ -99,9 +99,9 @@
                                         Veuillez créer un mappage entre sociétés dans le menu Configuration.
                                     </div>
                                     <div class="dz-dashboard-action">
-                                        <a href="/web#action=dz_intersociety_sync.action_dz_company_mapping"
+                                        <a t-att-href="'/web#action=%s&amp;model=dz.sync.wizard&amp;view_type=form&amp;mapping_id=%s' % (169, mapping.id)"
                                            class="btn btn-primary">
-                                            Configurer un mappage
+                                            Lancer une synchronisation
                                         </a>
                                     </div>
                                 </div>

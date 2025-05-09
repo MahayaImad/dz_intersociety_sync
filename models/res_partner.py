@@ -23,6 +23,14 @@ class ResPartner(models.Model):
         help="Indique si ce partenaire a été synchronisé avec l'autre société"
     )
 
+    # Nouveau champ pour l'éligibilité à la facturation déclarée
+    is_eligible_for_declaration = fields.Boolean(
+        string='Éligible à la facturation déclarée',
+        default=False,
+        help="Indique si ce client est éligible pour les factures déclarées",
+        groups="dz_intersociety_sync.group_declaration_manager"
+    )
+
     @api.depends('sync_partner_id')
     def _compute_is_synced(self):
         for partner in self:
@@ -55,7 +63,7 @@ class ResPartner(models.Model):
 
         # Ne déclenche la synchronisation que si des champs importants ont été modifiés
         important_fields = ['name', 'street', 'street2', 'zip', 'city', 'country_id',
-                            'email', 'phone', 'mobile', 'vat', 'company_type']
+                            'email', 'phone', 'mobile', 'vat', 'company_type', 'is_eligible_for_declaration']
 
         if any(field in vals for field in important_fields):
             for partner in self.filtered(lambda p: not p.parent_id):
@@ -108,6 +116,7 @@ class ResPartner(models.Model):
             'mobile': self.mobile,
             'vat': self.vat,
             'company_id': target_company.id,
+            'is_eligible_for_declaration': self.is_eligible_for_declaration,
         }
 
         # Changer de société temporairement
@@ -178,6 +187,7 @@ class ResPartner(models.Model):
             'phone': 'phone',
             'mobile': 'mobile',
             'vat': 'vat',
+            'is_eligible_for_declaration': 'is_eligible_for_declaration',
         }
 
         for source_field, target_field in field_mapping.items():

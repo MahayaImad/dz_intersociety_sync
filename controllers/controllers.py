@@ -85,9 +85,14 @@ class DzIntersocietyController(http.Controller):
             ('target_company_id', '=', request.env.company.id)
         ])
 
+        # Récupérer l'ID de l'action pour l'assistant de synchronisation
+        action_id = request.env.ref('dz_intersociety_sync.action_dz_sync_wizard', raise_if_not_found=False)
+        action_id = action_id.id if action_id else 0
+
         return request.render('dz_intersociety_sync.dashboard_template', {
             'mappings': mappings,
-            'company': request.env.company
+            'company': request.env.company,
+            'action_id': action_id
         })
 
     @http.route('/dz_intersociety_sync/trigger_sync', type='json', auth='user')
@@ -120,3 +125,8 @@ class DzIntersocietyController(http.Controller):
         except Exception as e:
             _logger.error("Erreur lors du déclenchement de la synchronisation: %s", str(e))
             return {'error': str(e)}
+
+    def _get_sync_wizard_action_id(self):
+        """Récupère l'ID de l'action pour l'assistant de synchronisation"""
+        action = self.env.ref('dz_intersociety_sync.action_dz_sync_wizard', raise_if_not_found=False)
+        return action.id if action else 0

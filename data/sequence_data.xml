@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Séquence pour Bon de Livraison -->
+        <record id="sequence_bl" model="ir.sequence">
+            <field name="name">Bon de Livraison</field>
+            <field name="code">account.move.bl</field>
+            <field name="prefix">BL/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Séquence pour Facture -->
+        <record id="sequence_facture" model="ir.sequence">
+            <field name="name">Facture Déclarée</field>
+            <field name="code">account.move.facture</field>
+            <field name="prefix">FAC/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_dz_export_wizard_form" model="ir.ui.view">
+        <field name="name">dz.export.wizard.form</field>
+        <field name="model">dz.export.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Exportation vers société officielle">
+                <sheet>
+                    <field name="state" invisible="1"/>
+                    <field name="company_id" invisible="1"/>
+
+                    <!-- Étape de configuration -->
+                    <div invisible="state != 'config'">
+                        <group>
+                            <field name="mapping_id" options="{'no_create': True}" domain="[('source_company_id', '=', company_id)]"/>
+                        </group>
+                        <group>
+                            <group string="Éléments à exporter">
+                                <field name="export_partners"/>
+                                <field name="export_products"/>
+                                <field name="export_invoices"/>
+                            </group>
+                            <group string="Période">
+                                <field name="date_from"/>
+                                <field name="date_to"/>
+                            </group>
+                        </group>
+                        <group string="Éléments à exporter" invisible="state != 'config'">
+                            <field name="partners_count" readonly="1"/>
+                            <field name="products_count" readonly="1"/>
+                            <field name="invoices_count" readonly="1"/>
+                        </group>
+                    </div>
+
+                    <!-- Étape de vérification et résultat -->
+                    <div invisible="state not in ('verification', 'done')">
+                        <field name="verification_result" nolabel="1" readonly="1"/>
+                    </div>
+                </sheet>
+                <footer>
+                    <button name="action_verify" string="Vérifier" type="object"
+                            class="btn-primary" invisible="state != 'config'"/>
+                    <button name="action_export" string="Exporter" type="object"
+                            class="btn-primary" invisible="state != 'verification'"
+                            confirm="Êtes-vous sûr de vouloir exporter ces éléments vers la société officielle?"/>
+                    <button string="Fermer" class="btn-secondary" special="cancel" invisible="state != 'done'"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel" invisible="state not in ('config', 'verification')"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_dz_export_wizard" model="ir.actions.act_window">
+        <field name="name">Exporter vers société officielle</field>
+        <field name="res_model">dz.export.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_dz_export_wizard"
+              name="Exporter vers société officielle"
+              parent="menu_dz_intersociety_root"
+              action="action_dz_export_wizard"
+              sequence="15"
+              groups="dz_intersociety_sync.group_declaration_manager"/>
+</odoo>

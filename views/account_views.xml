@@ -7,21 +7,26 @@
         <field name="inherit_id" ref="account.view_move_form"/>
         <field name="arch" type="xml">
             <xpath expr="//header" position="inside">
+                <button name="action_declare_invoice" type="object"
+                        string="Déclarer la facture"
+                        modifiers="{'invisible': [['|', '|', ['move_type', 'not in', ['out_invoice', 'out_refund']], ['state', '!=', 'posted'], ['is_declared', '=', True]]]}"
+                        groups="dz_intersociety_sync.group_declaration_manager"/>
+
                 <button name="action_sync_invoice" type="object"
                         string="Synchroniser vers société cible"
-                        invisible="1"
-                        invisible_modifier="['|', ('state', '!=', 'posted'), ('is_synced', '=', True)]"
+                        modifiers="{'invisible': [['|', ['state', '!=', 'posted'], ['is_synced', '=', true]]]}"
                         groups="account.group_account_invoice"/>
             </xpath>
             <xpath expr="//field[@name='company_id']" position="after">
-                <field name="sync_move_id" readonly="1" invisible="1"
-                       invisible_modifier="[('sync_move_id', '=', False)]"/>
+                <field name="sync_move_id" readonly="1" invisible="1"/>
                 <field name="is_synced" invisible="1"/>
+                <field name="is_declared" readonly="1" groups="dz_intersociety_sync.group_declaration_manager"/>
+                <field name="sequence_type" readonly="1" invisible="1"/>
             </xpath>
         </field>
     </record>
 
-    <!-- Ajout du champ dans la vue liste -->
+    <!-- Ajout du champ dans la vue liste des factures -->
     <record id="view_move_tree_inherit_dz_intersociety" model="ir.ui.view">
         <field name="name">account.move.tree.inherit.dz.intersociety</field>
         <field name="model">account.move</field>
@@ -29,11 +34,12 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='state']" position="after">
                 <field name="is_synced" widget="boolean_toggle"/>
+                <field name="is_declared" widget="boolean_toggle" groups="dz_intersociety_sync.group_declaration_manager"/>
             </xpath>
         </field>
     </record>
 
-    <!-- Ajout d'un filtre pour voir les factures synchronisées -->
+    <!-- Ajout d'un filtre pour voir les factures synchronisées et déclarées -->
     <record id="view_account_invoice_filter_inherit_dz_intersociety" model="ir.ui.view">
         <field name="name">account.move.select.inherit.dz.intersociety</field>
         <field name="model">account.move</field>
@@ -43,6 +49,8 @@
                 <separator/>
                 <filter string="Synchronisées" name="synced" domain="[('is_synced', '=', True)]"/>
                 <filter string="Non synchronisées" name="not_synced" domain="[('is_synced', '=', False)]"/>
+                <filter string="Déclarées" name="declared" domain="[('is_declared', '=', True)]" groups="dz_intersociety_sync.group_declaration_manager"/>
+                <filter string="Non déclarées" name="not_declared" domain="[('is_declared', '=', False)]" groups="dz_intersociety_sync.group_declaration_manager"/>
             </xpath>
         </field>
     </record>

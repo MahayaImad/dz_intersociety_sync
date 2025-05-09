@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Renommer les bons de livraison en "Sortie Stock" -->
+        <record id="stock_picking_type_out_rename" model="stock.picking.type">
+            <field name="name">Sortie Stock</field>
+            <field name="code">outgoing</field>
+            <field name="sequence_code">STS</field>
+        </record>
+    </data>
+</odoo>

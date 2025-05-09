@@ -67,20 +67,23 @@ class CompanyMapping(models.Model):
                 'sync_purchases': self.sync_purchases,
             })
 
+            # Exécuter le wizard et récupérer le résumé
             result = wizard.action_sync()
+            summary = wizard.summary or ""
 
+            # Mettre à jour la date de dernière synchronisation
             self.write({'last_sync_date': fields.Datetime.now()})
 
+            # Retourner une notification de succès avec le résumé
             return {
                 'type': 'ir.actions.client',
                 'tag': 'display_notification',
                 'params': {
                     'title': _('Synchronisation effectuée'),
-                    'message': _('La synchronisation entre %s et %s a été effectuée avec succès.') %
-                               (self.source_company_id.name, self.target_company_id.name),
+                    'message': _('La synchronisation entre %s et %s a été effectuée avec succès.\n\n%s') %
+                               (self.source_company_id.name, self.target_company_id.name, summary),
                     'type': 'success',
-                    'sticky': False,
-                    'next': result,
+                    'sticky': True,  # Mettre à True pour que l'utilisateur puisse lire le résumé
                 }
             }
         except Exception as e:
