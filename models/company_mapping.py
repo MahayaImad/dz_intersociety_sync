@@ -1,4 +1,4 @@
-from odoo import api, fields, models, _
+from odoo import api, fields, models,_
 from odoo.exceptions import ValidationError
 
 
@@ -52,17 +52,64 @@ class CompanyMapping(models.Model):
         """Déclenche manuellement la synchronisation"""
         self.ensure_one()
 
-        #TODO: à implémenter aprés la logique
+        # Création d'un savepoint pour pouvoir annuler en cas d'erreur
+        savepoint_name = f"sync_now_{self.id}_{fields.Datetime.now().strftime('%Y%m%d%H%M%S')}"
+        self.env.cr.savepoint(savepoint_name)
 
-        self.write({'last_sync_date': fields.Datetime.now()})
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': _('Synchronisation effectuée'),
-                'message': _('La synchronisation entre %s et %s a été effectuée avec succès.') %
-                           (self.source_company_id.name, self.target_company_id.name),
-                'type': 'success',
-                'sticky': False,
+        try:
+            # Créer un assistant de synchronisation et l'exécuter
+            wizard = self.env['dz.sync.wizard'].create({
+                'mapping_id': self.id,
+                'sync_partners': self.sync_partners,
+                'sync_products': self.sync_products,
+                'sync_invoices': self.sync_invoices,
+                'sync_sales': self.sync_sales,
+                'sync_purchases': self.sync_purchases,
+            })
+
+            result = wizard.action_sync()
+
+            self.write({'last_sync_date': fields.Datetime.now()})
+
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': _('Synchronisation effectuée'),
+                    'message': _('La synchronisation entre %s et %s a été effectuée avec succès.') %
+                               (self.source_company_id.name, self.target_company_id.name),
+                    'type': 'success',
+                    'sticky': False,
+                    'next': result,
+                }
             }
-        }
+        except Exception as e:
+            # Restaurer l'état précédent en cas d'erreur
+            self.env.cr.savepoint_rollback(savepoint_name)
+            _logger.error("Erreur lors de la synchronisation manuelle: %s", str(e), exc_info=True)
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': _('Échec de synchronisation'),
+                    'message': str(e),
+                    'type': 'danger',
+                    'sticky': True,
+                }
+            }
+    def _sync_in_background(self, model_name, record_ids, sync_type='create'):
+        """Ajoute des tâches de synchronisation à la file d'attente"""
+        # Vérifiez si le module queue_job est installé
+        if not self.env['ir.module.module'].search([('name', '=', 'queue_job'), ('state', '=', 'installed')]):
+            return False
+
+        # Importation dynamique pour éviter des erreurs si le module n'est pas installé
+        self.env['queue.job'].create({
+            'name': f"Synchronisation {sync_type} - {model_name} ({len(record_ids)} enregistrements)",
+            'model_name': model_name,
+            'method_name': '_sync_to_target_company_job',
+            'args': [record_ids, self.id],
+            'channel': 'dz_intersociety',
+            'priority': 15,
+        })
+        return True

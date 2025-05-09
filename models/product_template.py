@@ -33,18 +33,25 @@ class ProductTemplate(models.Model):
         """Surcharge pour synchroniser après création"""
         products = super(ProductTemplate, self).create(vals_list)
 
-        for product in products:
-            mappings = self.env['dz.company.mapping'].search([
-                ('source_company_id', '=', self.env.company.id),
-                ('sync_products', '=', True),
-                ('auto_sync', '=', True),
-            ])
+        # Ne synchronise que si configuré pour le faire
+        mappings = self.env['dz.company.mapping'].search([
+            ('source_company_id', '=', self.env.company.id),
+            ('sync_products', '=', True),
+            ('auto_sync', '=', True),
+        ])
 
-            if mappings:
+        if mappings:
+            # Préférer la synchronisation en arrière-plan pour les gros volumes
+            if len(products) > 3:
+                # Tenter la synchronisation en file d'attente
+                if mappings[0]._sync_in_background('product.template', products.ids, 'create'):
+                    return products
+            # Sinon, synchronisation directe
+            for product in products:
                 try:
                     product._sync_to_target_company(mappings[0])
                 except Exception as e:
-                    _logger.error("Erreur lors de la synchronisation du produit %s: %s", product.name, str(e))
+                    _logger.error("Erreur lors de la synchronisation du produit %s: %s", product.name, str(e), exc_info=True)
 
         return products
 

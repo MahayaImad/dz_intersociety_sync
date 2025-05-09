@@ -10,11 +10,12 @@
                 <button name="action_sync_partner" type="object"
                         string="Synchroniser"
                         class="oe_stat_button" icon="fa-refresh"
-                        invisible = "is_synced == True"
+                        invisible="1" invisible_modifier="[('is_synced', '=', True)]"
                         groups="base.group_partner_manager"/>
             </xpath>
             <xpath expr="//field[@name='company_id']" position="after">
-                <field name="sync_partner_id" readonly="1" attrs="{'invisible': [('sync_partner_id', '=', False)]}"/>
+                <field name="sync_partner_id" readonly="1" invisible="1"
+                       invisible_modifier="[('sync_partner_id', '=', False)]"/>
                 <field name="is_synced" invisible="1"/>
             </xpath>
         </field>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- Boutons du tableau de bord -->
+    <t t-name="dz_intersociety_sync.DashboardButtons" owl="1">
+        <div class="o_cp_buttons d-flex" role="toolbar" aria-label="Control panel buttons">
+            <button type="button" class="btn btn-primary me-1" t-on-click="openSyncWizard">
+                <i class="fa fa-sync-alt me-1"/>Lancer une synchronisation
+            </button>
+            <button type="button" class="btn btn-secondary" t-on-click="openMappingConfiguration">
+                <i class="fa fa-cog me-1"/>Configuration
+            </button>
+            <button type="button" class="btn btn-link ms-2" t-on-click="loadDashboardData">
+                <i class="fa fa-refresh me-1"/>Actualiser
+            </button>
+        </div>
+    </t>
+
+    <!-- Contenu principal du tableau de bord -->
+    <t t-name="dz_intersociety_sync.Dashboard" owl="1">
+        <div class="o_dz_dashboard">
+            <div class="dz_dashboard_title">
+                Tableau de bord de synchronisation inter-sociétés
+            </div>
+            <div class="dz_dashboard_subtitle">
+                Dernière mise à jour: <t t-esc="formatDate(state.lastUpdate)"/>
+            </div>
+
+            <!-- En-tête des statistiques -->
+            <div class="row mb-4" t-if="state.syncStats">
+                <div class="col-12">
+                    <div class="dz_dashboard_card">
+                        <div class="dz_card_title">Aperçu de la synchronisation</div>
+                        <div class="row">
+                            <div class="col-md-3 col-sm-6">
+                                <div class="dz_dashboard_stat synced">
+                                    <div class="dz_stat_value">
+                                        <t t-esc="calculatePercentage(state.syncStats.partners)"/>%
+                                    </div>
+                                    <div class="dz_stat_label">Partenaires</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="dz_dashboard_stat synced">
+                                    <div class="dz_stat_value">
+                                        <t t-esc="calculatePercentage(state.syncStats.products)"/>%
+                                    </div>
+                                    <div class="dz_stat_label">Produits</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="dz_dashboard_stat synced">
+                                    <div class="dz_stat_value">
+                                        <t t-esc="calculatePercentage(state.syncStats.invoices)"/>%
+                                    </div>
+                                    <div class="dz_stat_label">Factures</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6">
+                                <div class="dz_dashboard_stat synced">
+                                    <div class="dz_stat_value">
+                                        <t t-esc="calculatePercentage(state.syncStats.purchases)"/>%
+                                    </div>
+                                    <div class="dz_stat_label">Achats</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Liste des mappages -->
+            <div class="row">
+                <div class="col-12">
+                    <t t-if="state.mappings.length > 0">
+                        <t t-foreach="state.mappings" t-as="mapping" t-key="mapping.id">
+                            <div class="dz_dashboard_card">
+                                <div class="row align-items-center">
+                                    <div class="col-md-8">
+                                        <div class="dz_card_title"><t t-esc="mapping.name"/></div>
+                                        <div class="dz_card_info">
+                                            <div class="dz_company_info">
+                                                <span class="dz_company_source">Société source:</span> <t t-esc="mapping.source_company"/>
+                                            </div>
+                                            <div class="dz_company_info">
+                                                <span class="dz_company_target">Société cible:</span> <t t-esc="mapping.target_company"/>
+                                            </div>
+                                            <div class="dz_last_sync">
+                                                Dernière synchronisation: <t t-esc="formatDate(mapping.last_sync)"/>
+                                            </div>
+                                            <div class="mt-2">
+                                                <span t-if="mapping.auto_sync" class="dz_badge dz_synced">Auto-sync activée</span>
+                                                <span t-else="" class="dz_badge dz_not_synced">Auto-sync désactivée</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 text-end">
+                                        <button class="btn btn-primary dz_sync_button"
+                                                t-on-click="() => this.triggerSync(mapping.id)"
+                                                t-att-disabled="state.syncInProgress">
+                                            <i t-if="state.syncInProgress" class="o_dz_loading"/>
+                                            <i t-else="" class="fa fa-sync-alt me-1"/>
+                                            Lancer une synchronisation
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </t>
+                    <t t-else="">
+                        <div class="dz_dashboard_card">
+                            <div class="dz_no_mappings">
+                                <p class="mb-2">Aucune configuration de synchronisation trouvée pour votre société.</p>
+                                <p class="mb-3">Veuillez créer un mappage entre sociétés dans le menu Configuration.</p>
+                                <button class="btn btn-primary" t-on-click="openMappingConfiguration">
+                                    <i class="fa fa-cog me-1"/>Configurer un mappage
+                                </button>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>

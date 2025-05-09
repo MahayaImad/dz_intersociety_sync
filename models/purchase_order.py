@@ -33,10 +33,17 @@ class PurchaseOrder(models.Model):
         self.ensure_one()
 
         if self.sync_purchase_id:
+            _logger.info("La commande %s est déjà synchronisée. ID miroir: %s", self.name, self.sync_purchase_id.id)
             return  # Déjà synchronisé
 
         if not mapping or not mapping.sync_purchases:
+            _logger.warning("Synchronisation impossible pour la commande %s: mapping invalide ou désactivé", self.name)
             return  # Pas de mapping ou synchronisation désactivée
+
+        # Ajout d'identifiants pour le traçage
+        sync_trace_id = f"{self._name}_{self.id}_{fields.Datetime.now().strftime('%Y%m%d%H%M%S')}"
+        _logger.info("[%s] Début de la synchronisation de la commande %s vers la société %s",
+                     sync_trace_id, self.name, mapping.target_company_id.name)
 
         target_company = mapping.target_company_id
 

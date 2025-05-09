@@ -202,3 +202,43 @@ class ResPartner(models.Model):
 
     def action_sync_partner(self):
         """Action pour synchroniser manuellement un partenaire"""
+        self.ensure_one()
+
+        mappings = self.env['dz.company.mapping'].search([
+            ('source_company_id', '=', self.env.company.id),
+            ('sync_partners', '=', True),
+        ], limit=1)
+
+        if not mappings:
+            raise UserError(_("Aucun mappage trouvé pour synchroniser les partenaires."))
+
+        if self.sync_partner_id:
+            self._update_mirror_partner({
+                'name': self.name,
+                'company_type': self.company_type,
+                'street': self.street,
+                'street2': self.street2,
+                'zip': self.zip,
+                'city': self.city,
+                'state_id': self.state_id.id if self.state_id else False,
+                'country_id': self.country_id.id if self.country_id else False,
+                'email': self.email,
+                'phone': self.phone,
+                'mobile': self.mobile,
+                'vat': self.vat,
+            })
+            message = _("Le partenaire a été mis à jour dans la société cible.")
+        else:
+            mirror_partner = self._sync_to_target_company(mappings[0])
+            message = _("Le partenaire a été synchronisé vers la société cible.")
+
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Synchronisation réussie'),
+                'message': message,
+                'type': 'success',
+                'sticky': False,
+            }
+        }

@@ -1,3 +1,6 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_dz_company_mapping_user,dz.company.mapping.user,model_dz_company_mapping,account.group_account_user,1,0,0,0
 access_dz_company_mapping_manager,dz.company.mapping.manager,model_dz_company_mapping,account.group_account_manager,1,1,1,1
+access_dz_sync_wizard_user,dz.sync.wizard.user,model_dz_sync_wizard,account.group_account_user,1,1,1,0
+access_dz_sync_wizard_manager,dz.sync.wizard.manager,model_dz_sync_wizard,account.group_account_manager,1,1,1,1
+access_dz_sync_queue_user,dz.sync.queue.user,model_dz_sync_queue,base.group_user,1,1,1,0

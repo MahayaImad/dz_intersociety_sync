@@ -1,0 +1,180 @@
+/* Litmed Inter-Society Synchronization - Styles */
+
+.o_dz_dashboard {
+    padding: 24px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+
+    .dz_dashboard_title {
+        font-size: 24px;
+        font-weight: 600;
+        color: #4c4c4c;
+        margin-bottom: 16px;
+    }
+
+    .dz_dashboard_subtitle {
+        font-size: 16px;
+        color: #666666;
+        margin-bottom: 24px;
+    }
+
+    .dz_dashboard_card {
+        background-color: white;
+        border-radius: 6px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin-bottom: 20px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    }
+
+    .dz_card_title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: #3d3d3d;
+    }
+
+    .dz_card_content {
+        margin-bottom: 16px;
+    }
+
+    .dz_card_info {
+        margin-top: 8px;
+        margin-bottom: 8px;
+        font-size: 14px;
+        color: #555555;
+    }
+
+    .dz_dashboard_stat {
+        display: inline-block;
+        width: 120px;
+        text-align: center;
+        padding: 10px;
+        margin: 8px;
+        background-color: #f5f5f5;
+        border-radius: 4px;
+
+        &.synced {
+            background-color: #D4EDDA;
+        }
+
+        &.not_synced {
+            background-color: #F8D7DA;
+        }
+    }
+
+    .dz_stat_value {
+        font-size: 24px;
+        font-weight: bold;
+        color: #4c4c4c;
+    }
+
+    .dz_stat_label {
+        font-size: 12px;
+        color: #777777;
+        margin-top: 4px;
+    }
+
+    .dz_sync_button {
+        margin-top: 16px;
+    }
+
+    .dz_company_info {
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .dz_company_source {
+        color: #28a745;
+    }
+
+    .dz_company_target {
+        color: #007bff;
+    }
+
+    .dz_last_sync {
+        font-style: italic;
+        color: #6c757d;
+        margin-top: 8px;
+    }
+
+    .dz_no_mappings {
+        background-color: #fff3cd;
+        padding: 16px;
+        border-radius: 4px;
+        color: #856404;
+    }
+}
+
+// Adaptations pour l'interface Odoo 17
+.o_main_navbar {
+    .dropdown-toggle.o_dz_menu_button::after {
+        display: none;
+    }
+}
+
+// Animation de chargement pour les synchronisations
+.o_dz_loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-top: 2px solid #3498db;
+    border-radius: 50%;
+    animation: dz_spin 1s linear infinite;
+}
+
+@keyframes dz_spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+// Badges de statut
+.dz_badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-right: 8px;
+
+    &.dz_synced {
+        background-color: #D4EDDA;
+        color: #155724;
+    }
+
+    &.dz_not_synced {
+        background-color: #F8D7DA;
+        color: #721c24;
+    }
+
+    &.dz_pending {
+        background-color: #FFF3CD;
+        color: #856404;
+    }
+}
+
+// Adapté pour l'impression
+@media print {
+    .o_dz_dashboard {
+        background-color: white !important;
+        box-shadow: none !important;
+
+        .dz_dashboard_card {
+            box-shadow: none !important;
+            border: 1px solid #dee2e6;
+        }
+
+        .dz_sync_button {
+            display: none !important;
+        }
+    }
+}

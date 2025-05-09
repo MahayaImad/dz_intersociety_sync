@@ -6,10 +6,10 @@
         <field name="arch" type="xml">
             <form string="Synchronisation inter-sociétés">
                 <sheet>
-                    <group  invisible = "summary != False">
+                    <group invisible="1" invisible_modifier="[('summary', '=', False)]">
                         <field name="mapping_id" options="{'no_create': True}"/>
                     </group>
-                    <group invisible = "summary != False">
+                    <group invisible="1" invisible_modifier="[('summary', '=', False)]">
                         <group string="Éléments à synchroniser">
                             <field name="sync_partners"/>
                             <field name="sync_products"/>
@@ -22,7 +22,7 @@
                             <field name="date_to"/>
                         </group>
                     </group>
-                    <group invisible = "summary == False">
+                    <group invisible="1" invisible_modifier="[('summary', '!=', False)]">
                         <field name="summary" nolabel="1"/>
                     </group>
                 </sheet>

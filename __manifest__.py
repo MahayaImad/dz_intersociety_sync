@@ -1,7 +1,7 @@
 {
-    'name': 'Litmed Inter-Society Synchronization',
+    'name': 'Inter-Society Synchronization',
     'version': '1.0',
-    'summary': 'Synchronisation automatique entre sociétés pour SARL Litmed Pro',
+    'summary': 'Synchronisation automatique entre sociétés',
     'description': """
         Module de synchronisation automatique des transactions entre deux sociétés:
         - Société principale: toutes les opérations (facturées et non facturées)
@@ -24,15 +24,30 @@
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
+
+        'data/ir_config_parameter.xml',
+        'data/action_data.xml',
+
         'views/company_mapping_views.xml',
         'views/account_views.xml',
         'views/sale_views.xml',
         'views/purchase_views.xml',
         'views/menu_views.xml',
-        'data/ir_config_parameter.xml',
+        'views/dashboard_template.xml',
+        'views/partner_views.xml',
+
         'wizards/sync_wizard.xml',
     ],
-    'demo': [],
+    'images': ['static/description/icon.png'],
+    'assets': {
+        'web.assets_backend': [
+            'dz_intersociety_sync/static/src/scss/style.scss',
+            'dz_intersociety_sync/static/src/js/dashboard.js',
+        ],
+        'web.assets_qweb': [
+            'dz_intersociety_sync/static/src/xml/dashboard.xml',
+        ],
+    },
     'installable': True,
     'application': True,
     'auto_install': False,

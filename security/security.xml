@@ -10,5 +10,16 @@
             <field name="perm_create" eval="1"/>
             <field name="perm_unlink" eval="1"/>
         </record>
+
+       <record id="dz_intersociety_sync_data_rule" model="ir.rule">
+    <field name="name">Restriction des données synchronisées</field>
+    <field name="model_id" ref="base.model_ir_model"/> <!-- Correction: utilisation de base.model_ir_model -->
+    <field name="domain_force">[]</field>
+    <field name="global" eval="True"/>
+    <field name="perm_read" eval="True"/>
+    <field name="perm_write" eval="True"/>
+    <field name="perm_create" eval="True"/>
+    <field name="perm_unlink" eval="True"/>
+</record>
     </data>
 </odoo>

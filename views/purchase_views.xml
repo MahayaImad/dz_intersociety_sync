@@ -9,7 +9,8 @@
             <xpath expr="//header" position="inside">
                 <button name="action_sync_purchase" type="object"
                         string="Synchroniser vers société cible"
-                        invisible="state not in ('purchase', 'done') or is_synced == True"
+                        invisible="1"
+                        invisible_modifier="['|', ('state', 'not in', ['purchase', 'done']), ('is_synced', '=', True)]"
                         groups="purchase.group_purchase_user"/>
             </xpath>
             <xpath expr="//field[@name='company_id']" position="after">
